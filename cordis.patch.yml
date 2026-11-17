@@ -1,0 +1,7 @@
+# dsh-enhance-prompt bundle patch：把宿主半边（HTTP 路由 + enhance_prompt 工具 +
+# 系统提示词公告）与浏览器半边（输入框右侧的增强按钮）作为一行插入 profile 名单。
+#
+# 纯 insert(id/name) 可热挂载免重启；name 必须是真实包名，否则 cordis import 失败。
+- insert:
+    - id: enhance-prompt
+      name: dsh-enhance-prompt
