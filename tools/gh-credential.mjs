@@ -14,7 +14,8 @@ export function gitCredential(host = 'github.com') {
   return { username: grab('username'), password: grab('password'), raw: text };
 }
 
-if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
+const invokedDirectly = Boolean(process.argv[1]) && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`;
+if (invokedDirectly) {
   const c = gitCredential();
   console.log('username:', c.username || '(none)');
   console.log('token kind:', c.password ? (c.password.startsWith('ghp_') ? 'classic PAT' : c.password.startsWith('github_pat_') ? 'fine-grained PAT' : c.password.startsWith('gho_') ? 'OAuth' : `other(${c.password.length} chars)`) : '(none)');

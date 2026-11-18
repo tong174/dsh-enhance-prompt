@@ -155,7 +155,7 @@
 | 版本来源 | 硬编码 ×2 | `package.json` 单源 | R1 |
 | 单元测试 | 7 项 | **14 项（全过）** | `node test/unit.mjs` |
 | HTTP 契约测试 | 无 | **7 项（全过）** | `node test/api.mjs` |
-| 代码量 | index 656 / client 443 / prompts 227 | index ≈ 1140 / client ≈ 470 / prompts ≈ 230 | 体积涨在安全、幂等、观测上；prompt 资产本身没变大 |
+| 代码量 | index 656 / client 443 / prompts 227 | index 1119 / client 527 / prompts 230 | 体积涨在安全、幂等、观测上；prompt 资产本身只多了 3 行（导出与校验函数） |
 
 ---
 
