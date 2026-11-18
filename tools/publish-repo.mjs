@@ -86,11 +86,16 @@ if (!treeRes.ok) {
   process.exit(1);
 }
 
-const message = `feat: dsh-enhance-prompt v0.3.0
+const message = `feat: dsh-enhance-prompt v0.4.0
 
-Reverse-engineered WorkBuddy "Enhance prompt", reimplemented as a DeepSeek Harness plugin.
-Ships the verbatim Jr/Yr prompt pair plus a rewritten default prompt that beat it in a
-measured A/B (23.69 vs 22.13, 11 of 12 cases) — see docs/compare-report.md.`;
+Adversarial audit and rebuild. Fixes seven real defects found by reading the code against
+the actual DSH adapter contract, the worst of which made the route resolver useless:
+llm.listModels() is async, so every provider was treated as model-less and every call
+first tried a route with an empty model name.
+
+Also: selftest is now POST-only and rate limited, promptStyle has one source of truth,
+the request handler has a total time budget, repeated clicks are idempotent, and the
+HTTP surface rejects cross-origin callers. 14 unit + 7 contract tests. See docs/audit-v0.4.md.`;
 
 const commit = await gh(`/repos/${OWNER}/${REPO}/git/commits`, {
   method: 'POST',

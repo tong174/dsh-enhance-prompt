@@ -1,6 +1,6 @@
 {
   "name": "dsh-enhance-prompt",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "One-click prompt enhancer for DeepSeek Harness — a reverse-engineered, benchmarked reimplementation of WorkBuddy's Enhance prompt.",
   "type": "module",
   "main": "lib/index.js",
@@ -25,7 +25,8 @@
     "README.md",
     "README.zh.md",
     "LICENSE",
-    "docs/compare-report.md"
+    "docs/compare-report.md",
+    "docs/audit-v0.4.md"
   ],
   "repository": {
     "type": "git",

@@ -79,47 +79,64 @@ Everything lives in the plugin's row in your profile `cordis.patch.yml`; all fie
 | `provider`, `model` | `''` | empty = automatic candidate chain |
 | `providerPriority` | `[]` | provider ids to try first |
 | `maxAttempts` | `6` | how many candidate routes one enhancement may try |
+| `totalBudgetMs` | `90000` | wall-clock ceiling for the whole chain, so a dead provider cannot burn `maxAttempts × timeoutMs` |
+| `maxConcurrency` | `2` | concurrent enhancements; extra requests get `429 busy` |
+| `idempotent` | `true` | sha256 cache + single-flight, so double-clicking the star costs one model call |
 | `temperature` | `0.3` | |
 | `maxTokens` | `4000` | reasoning tokens count against this |
-| `timeoutMs` | `60000` | |
-| `minTextLength` | `1` | matches WorkBuddy |
+| `timeoutMs` | `60000` | per route |
+| `minTextLength` | `1` | matches WorkBuddy; `0` really does disable the check |
 | `maxInputChars` | `8000` | reject longer drafts (`too_large`) |
 | `customSystemPrompt` / `customUserTemplate` | `''` | override; the template must contain `{input}` |
 | `stripWrappingQuotes` / `stripCodeFence` | `true` | same cleanup as the original |
 | `announceToAgent` / `toolsEnabled` | `true` | expose `enhance_prompt` |
-| `selfTestOnStart` | `true` | run one self-test at load, logged |
-| `logFile` | `~/.dsh/enhance-prompt.log` | host-side log; browser failures POST here too |
+| `allowRemote` | `false` | only loopback clients may call the HTTP API |
+| `requireHeader` | `true` | browser requests must carry `x-dsh-enhance: 1` (blocks cross-site `fetch`/forms) |
+| `rateLimitPerMinute` | `30` | per client token bucket; self-test is capped at 2/min |
+| `selfTestOnStart` | `false` | opt-in: costs one real model call per load. Static checks always run |
+| `logFile` | `~/.dsh/enhance-prompt.log` | host-side log, async and rotated at 2 MB; browser failures POST here too |
 
 ## API
 
 ```http
 POST /dsh-enhance-prompt/enhance
+x-dsh-enhance: 1
 { "text": "帮我写个爬虫" }
-→ { "success": true, "text": "...", "provider": "magpie", "model": "group/deepseek" }
-→ { "success": false, "text": "", "code": "empty_input|too_large|timeout|llm_error|disabled", "error": "..." }
+→ { "success": true, "text": "...", "provider": "magpie", "model": "group/deepseek",
+    "cached": false, "shared": false, "ms": 2310, "style": "enhanced" }
+→ { "success": false, "text": "", "code": "empty_input|too_large|forbidden|busy|timeout|llm_error|no_route|disabled", "error": "..." }
 
-GET  /dsh-enhance-prompt/info
-GET  /dsh-enhance-prompt/selftest
-POST /dsh-enhance-prompt/report      # browser-side failure reporting, written to the log
+GET  /dsh-enhance-prompt/info      # version, style, resolved route, limits, cache, stats, startup checks
+POST /dsh-enhance-prompt/selftest   # one real model call; 405 on GET so a browser tab cannot trigger it
+POST /dsh-enhance-prompt/report     # browser-side failure reporting, written to the log
 ```
 
-`/api/enhance-prompt/*` exists as an alias but the host's API gateway claims that prefix and answers 401 — use `/dsh-enhance-prompt/*`.
+Status codes: `400` bad input, `401/403` header or loopback refused, `405` wrong method, `413` body over 256 KB,
+`429` concurrency or rate limit, `502` model failure, `503` disabled / no route, `504` timeout.
+
+`/api/enhance-prompt/*` used to be an alias but the host's API gateway claims that prefix and answers 401, so it was removed in 0.4.0 — use `/dsh-enhance-prompt/*`.
 
 ## Verification
 
 ```powershell
-node test/unit.mjs                    # sanitizer + template logic (7 checks)
+node test/unit.mjs                    # prompt assets + sanitizer + style resolution (14 checks, no model call)
+node test/api.mjs                     # HTTP contract against the running host (7 checks, 1 real model call)
+node test/api.mjs --no-model          # same, minus the paid call
 node test/live.mjs                    # hit a gateway directly, check language following
-node test/compare.mjs --round 6 --passes 5   # A/B against WorkBuddy's prompt, writes docs/compare-round6.json
+node test/compare.mjs --round 6 --passes 5   # A/B against WorkBuddy's prompt
 node tools/report.mjs                 # regenerate docs/compare-report.md
-node test/live-compare.mjs            # hit the installed plugin endpoint end to end
 ```
+
+A passing `GET /dsh-enhance-prompt/info` must show `"startup": { "ok": true }` and a `route` with a **non-empty**
+`model`; `version` must equal `package.json`. See `docs/audit-v0.4.md` for the full before/after audit.
 
 ## Known limits
 
 - The rewrite replaces the **whole draft** (same as the original); block/quote structure is not preserved.
 - The revert backup lives in component state — switching sessions or reloading drops it (WorkBuddy behaves the same).
 - Only binds the `conversation.input.right` slot. If a host version renames that slot, the button silently disappears instead of erroring.
+- The HTTP API is localhost-only and header-gated by default. If you flip `allowRemote`, you are exposing a route that spends your model quota — put it behind a proxy that authenticates.
+- Route selection is per provider+model and persisted for 7 days; a provider that answers with an auth/balance error is cooled down for 10 minutes, not removed.
 
 ## License
 
