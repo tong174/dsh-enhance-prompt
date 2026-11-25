@@ -2,7 +2,9 @@
 
 A one-click **prompt enhancer** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — a reverse-engineered, benchmarked reimplementation of WorkBuddy's "Enhance prompt".
 
-Type a rough draft in the composer, click the sparkle button on the right, and the draft is rewritten into a clearer, more specific prompt **without changing what you asked for**. Click again to revert. If you edit the text yourself, the revert entry disappears — exactly like the original.
+Type a rough draft in the composer, click the sparkle button on the right, and the draft is rewritten into a clearer, more specific prompt **without changing what you asked for**.
+
+Since **v0.5.0 the rewrite lands in a preview panel first**: streaming output, token-level diff against your draft, and an eight-deep undo stack. Your draft is not touched until you press *Use it* — and pressing it is the only path back to the composer.
 
 ```
 draft:  帮我写个爬虫
@@ -42,10 +44,13 @@ WorkBuddy's stable failure modes: inflating a five-word request into twelve time
 ## What you get
 
 - **Sparkle button in the composer** (`conversation.input.right` slot) with four states: idle / enhancing / done / failed.
-- **Revert** back to your original draft, which vanishes the moment you type over the result.
+- **Preview panel** — streaming rewrite, token-level diff, eight-deep undo stack persisted in `localStorage`. The draft is written only when you accept.
+- **Four modes on the chip row** — `light` (1.2× length budget), `standard` (2.5×), `deep` (4×), `system` (emits a structured system prompt). `enhanced` is a legacy alias of `standard`; `workbuddy` is the A/B fixture. Neither shows a chip.
+- **Model and reasoning-effort pickers** — `/models` lists provider groups including sleeping ones; an effort is sent only if the model's `reasoning.efforts` actually declares it, and a gateway that rejects it triggers a downgrade-and-retry.
+- **Deterministic quality gates** — a fidelity gate extracts the concrete facts from your draft (inline commands, URLs, paths, filenames, versions, numbers with units, `camelCase`/`snake_case`/`CONST_CASE` identifiers, `@references`, quoted literals) and verifies each one survived; a single repair pass reinjects the missing ones; a length gate rejects bloated rewrites; a language gate refuses to flip a monolingual draft.
+- **Disabled while `@references` are attached** — whether `setDraft` clears the reference list cannot be verified from the host side, so the button refuses rather than silently dropping the files you attached.
 - **`enhance_prompt` agent tool** — the model can rewrite a prompt itself.
-- **HTTP API** — `POST /dsh-enhance-prompt/enhance`, plus `/info`, `/report`, `/selftest`.
-- **Three prompt styles** — `enhanced` (default, benchmarked), `workbuddy` (verbatim original), `system` (generic copy-editing).
+- **HTTP API** — `/enhance`, `/stream` (SSE), `/models`, `/info`, `/report`, `/selftest`.
 - **Provider fallback chain** — tries routes in order, cools down providers that fail with auth/balance errors, and remembers the one that worked.
 
 ## Install
@@ -75,9 +80,16 @@ Everything lives in the plugin's row in your profile `cordis.patch.yml`; all fie
 
 | field | default | meaning |
 | --- | --- | --- |
-| `promptStyle` | `enhanced` | `enhanced` / `workbuddy` / `system` |
+| `promptStyle` | `standard` | `light` (1.2×) / `standard` (2.5×) / `deep` (4×) / `system` (structured system prompt) / `workbuddy` (verbatim original, A/B baseline). Unknown values fall back to `standard`, never `workbuddy` |
+| `lengthGuard` | `true` | one converge pass when a rewrite overshoots the mode's ratio; `system`/`workbuddy` are unbounded, and every mode is floored at 600 chars so the guard cannot squeeze out the execution detail `standard` is required to add |
+| `fidelityGuard` | `true` | extract fact anchors before the call, verify each one survived after it |
+| `fidelityRepair` | `true` | one repair pass when facts went missing — never pipelined, never retried twice |
+| `refineMode` | `true` | let the model turn a vague draft into an executable task instead of interrogating you |
+| `contextAware` / `contextTurns` / `contextChars` | `true` / `6` / `4000` | carry recent turns only when the draft is anaphoric ("make that plan better") |
+| `stream` | `true` | serve `/stream` as SSE; off means wait for the whole answer |
 | `provider`, `model` | `''` | empty = automatic candidate chain |
 | `providerPriority` | `[]` | provider ids to try first |
+| `reasoningEffort` | `''` | empty = send no effort. The model default cost 11.5× the output tokens on this mechanical task |
 | `maxAttempts` | `6` | how many candidate routes one enhancement may try |
 | `totalBudgetMs` | `90000` | wall-clock ceiling for the whole chain, so a dead provider cannot burn `maxAttempts × timeoutMs` |
 | `maxConcurrency` | `2` | concurrent enhancements; extra requests get `429 busy` |
@@ -86,40 +98,51 @@ Everything lives in the plugin's row in your profile `cordis.patch.yml`; all fie
 | `maxTokens` | `4000` | reasoning tokens count against this |
 | `timeoutMs` | `60000` | per route |
 | `minTextLength` | `1` | matches WorkBuddy; `0` really does disable the check |
-| `maxInputChars` | `8000` | reject longer drafts (`too_large`) |
+| `maxInputChars` | `8000` | reject longer drafts (`too_long`) |
 | `customSystemPrompt` / `customUserTemplate` | `''` | override; the template must contain `{input}` |
 | `stripWrappingQuotes` / `stripCodeFence` | `true` | same cleanup as the original |
 | `announceToAgent` / `toolsEnabled` | `true` | expose `enhance_prompt` |
 | `allowRemote` | `false` | only loopback clients may call the HTTP API |
 | `requireHeader` | `true` | browser requests must carry `x-dsh-enhance: 1` (blocks cross-site `fetch`/forms) |
 | `rateLimitPerMinute` | `30` | per client token bucket; self-test is capped at 2/min |
-| `selfTestOnStart` | `false` | opt-in: costs one real model call per load. Static checks always run |
-| `logFile` | `~/.dsh/enhance-prompt.log` | host-side log, async and rotated at 2 MB; browser failures POST here too |
+| `selfTestOnStart` | `false` | one real model call per load when enabled. The structural check (prompts/modes/routes/guard/log/version) always runs for free; its result is `/info.startupCheck` |
 
 ## API
 
 ```http
 POST /dsh-enhance-prompt/enhance
 x-dsh-enhance: 1
-{ "text": "帮我写个爬虫" }
-→ { "success": true, "text": "...", "provider": "magpie", "model": "group/deepseek",
-    "cached": false, "shared": false, "ms": 2310, "style": "enhanced" }
-→ { "success": false, "text": "", "code": "empty_input|too_large|forbidden|busy|timeout|llm_error|no_route|disabled", "error": "..." }
+{ "text": "帮我写个爬虫", "style": "standard", "effort": "low", "force": false }
+→ { "ok": true, "text": "...", "meta": { "mode", "modeLabel", "provider", "model", "route", "ms", "chars",
+    "draftChars", "ratio", "ratioLabel", "budget", "anchors": { "total", "kept", "reinjected" },
+    "note", "repaired", "contextUsed", "contextReason", "language", "cached" } }
+→ { "ok": false, "code": "empty|too_long|forbidden|rate_limited|busy|timeout|upstream|empty_output|no_route|llm_unavailable|disabled|bad_request", "error": "..." }
 
-GET  /dsh-enhance-prompt/info      # version, style, resolved route, limits, cache, stats, startup checks
-POST /dsh-enhance-prompt/selftest   # one real model call; 405 on GET so a browser tab cannot trigger it
-POST /dsh-enhance-prompt/report     # browser-side failure reporting, written to the log
+POST /dsh-enhance-prompt/stream      # SSE, same body
+event: route   data: { "provider": "magpie", "model": "group/deepseek" }
+event: delta   data: { "text": "partial" }
+event: done    data: { "ok": true, "text": "...", "meta": { …same as /enhance… } }
+event: error   data: { "ok": false, "code": "upstream", "error": "..." }   # same code set as /enhance
+
+GET  /dsh-enhance-prompt/models      # provider groups (sleeping ones included) with per-model reasoning efforts
+GET  /dsh-enhance-prompt/info        # version, style, guards, context, effort, resolved route, stats, startup checks
+POST /dsh-enhance-prompt/selftest    # one real model call; 405 on GET so a browser tab cannot trigger it
+POST /dsh-enhance-prompt/report      # browser-side failure reporting, written to the log
 ```
 
-Status codes: `400` bad input, `401/403` header or loopback refused, `405` wrong method, `413` body over 256 KB,
-`429` concurrency or rate limit, `502` model failure, `503` disabled / no route, `504` timeout.
+`meta.anchors.reinjected > 0` means facts were dropped and one repair pass ran — in that case the length ceiling yields: too long is acceptable, missing content is not.
+
+Status codes: `400` bad input, `401/403` header or loopback refused, `405` wrong method, `413` body over 256 KB or draft over
+`maxInputChars`, `422` language flip or length rejection, `429` concurrency or rate limit, `502` model failure,
+`503` disabled / no route, `504` timeout.
 
 `/api/enhance-prompt/*` used to be an alias but the host's API gateway claims that prefix and answers 401, so it was removed in 0.4.0 — use `/dsh-enhance-prompt/*`.
 
 ## Verification
 
 ```powershell
-node test/unit.mjs                    # prompt assets + sanitizer + style resolution (14 checks, no model call)
+npm test                              # 40 checks, no model call: anchors (18) + prompts (9) + client (9) + host contract (6)
+npm run check                         # node --check on all four entry files
 node test/api.mjs                     # HTTP contract against the running host (7 checks, 1 real model call)
 node test/api.mjs --no-model          # same, minus the paid call
 node test/live.mjs                    # hit a gateway directly, check language following
@@ -127,14 +150,19 @@ node test/compare.mjs --round 6 --passes 5   # A/B against WorkBuddy's prompt
 node tools/report.mjs                 # regenerate docs/compare-report.md
 ```
 
+`npm test` deliberately names its four files instead of using bare `node --test`: `test/compare.mjs` and `test/live*.mjs` make real model calls and must never be swept into a unit run.
+
+`test/client.test.mjs` runs the shipped `lib/client.js` source through `new Function` with stubbed `window`/`document`/`fetch`, captures the `__ModuleLoader__.load({ id, factory })` call, and asserts against `exports.__internals` — so it tests the published artifact, not a copy of it.
+
 A passing `GET /dsh-enhance-prompt/info` must show `"startup": { "ok": true }` and a `route` with a **non-empty**
 `model`; `version` must equal `package.json`. See `docs/audit-v0.4.md` for the full before/after audit.
 
 ## Known limits
 
-- The rewrite replaces the **whole draft** (same as the original); block/quote structure is not preserved.
-- The revert backup lives in component state — switching sessions or reloading drops it (WorkBuddy behaves the same).
+- Accepting a rewrite replaces the **whole draft**; block/quote structure is not preserved. You see the diff first, but there is no per-hunk accept.
+- The undo stack is 8 entries deep and keyed to this browser profile. `localStorage` being unavailable (private mode) silently degrades to in-memory-only for the session.
 - Only binds the `conversation.input.right` slot. If a host version renames that slot, the button silently disappears instead of erroring.
+- The button disables itself while `@references` are attached, because whether `setDraft` clears the reference list cannot be verified from the host side. Dropping your attached files silently would be worse than making you clear them first.
 - The HTTP API is localhost-only and header-gated by default. If you flip `allowRemote`, you are exposing a route that spends your model quota — put it behind a proxy that authenticates.
 - Route selection is per provider+model and persisted for 7 days; a provider that answers with an auth/balance error is cooled down for 10 minutes, not removed.
 

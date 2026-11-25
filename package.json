@@ -1,9 +1,13 @@
 {
   "name": "dsh-enhance-prompt",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "One-click prompt enhancer for DeepSeek Harness — a reverse-engineered, benchmarked reimplementation of WorkBuddy's Enhance prompt.",
   "type": "module",
   "main": "lib/index.js",
+  "scripts": {
+    "test": "node --test test/anchors.test.mjs test/prompts.test.mjs test/client.test.mjs test/contract.test.mjs",
+    "check": "node --check lib/index.js && node --check lib/client.js && node --check lib/anchors.js && node --check lib/prompts.js"
+  },
   "exports": {
     ".": "./lib/index.js",
     "./client": "./lib/client.js",
