@@ -1,0 +1,14 @@
+node_modules/
+out/
+*.log
+.DS_Store
+Thumbs.db
+
+# Competitor sources unpacked for the v0.5.0 comparison pass: 250 files, 37 MB of
+# third-party code pulled from the DSH plugin registry. The audit conclusions live
+# in docs/compare-report.md; the tarballs themselves are not ours to redistribute.
+_market/
+
+# One-off host introspection scratch scripts, kept locally only.
+test/dump-*.mjs
+test/probe-slots.mjs

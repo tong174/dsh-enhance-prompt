@@ -1,0 +1,1790 @@
+{
+  "generatedAt": "2026-11-17T16:50:50.349Z",
+  "model": "group/deepseek",
+  "round": 4,
+  "passes": 3,
+  "cases": 12,
+  "scored": 12,
+  "summary": {
+    "workbuddy": {
+      "fidelity": 4.61,
+      "gain": 4.75,
+      "language": 4.72,
+      "restraint": 3.36,
+      "usable": 4.97
+    },
+    "enhanced": {
+      "fidelity": 4.89,
+      "gain": 4.39,
+      "language": 5,
+      "restraint": 4.25,
+      "usable": 4.89
+    },
+    "total": {
+      "workbuddy": 22.42,
+      "enhanced": 23.42
+    },
+    "wins": {
+      "workbuddy": 1,
+      "enhanced": 10,
+      "tie": 1
+    }
+  },
+  "deterministic": {
+    "workbuddy": {
+      "langOk": 10,
+      "metaLeak": 0,
+      "fence": 0,
+      "wrapped": 0,
+      "empty": 0,
+      "missingFacts": 3,
+      "avgLenRatio": 9.71
+    },
+    "enhanced": {
+      "langOk": 12,
+      "metaLeak": 0,
+      "fence": 1,
+      "wrapped": 0,
+      "empty": 0,
+      "missingFacts": 0,
+      "avgLenRatio": 6.28
+    }
+  },
+  "detail": [
+    {
+      "id": "zh-vague",
+      "note": "极短、极含糊",
+      "input": "帮我写个爬虫",
+      "workbuddy": {
+        "text": "请帮我编写一个网络爬虫程序，用于从指定网站抓取所需数据。请明确目标网站、要提取的数据字段、页面范围（如单页、分页或全站）以及数据量规模。要求遵守目标网站的 robots.txt 和使用条款，控制请求频率并加入重试与超时处理，输出结果保存为结构化格式（如 CSV 或 JSON），并附上运行说明和依赖环境。",
+        "ms": 1873,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 25.33,
+          "kept": [
+            "爬虫"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.67,
+          "gain": 5,
+          "language": 5,
+          "restraint": 3,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 22.67
+      },
+      "enhanced": {
+        "text": "请帮我写一个网络爬虫，先说明目标网站、需要采集的字段、翻页范围、请求频率与反爬处理方式、数据保存格式，再给出可直接运行的完整代码和依赖说明。",
+        "ms": 2216,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 11.67,
+          "kept": [
+            "爬虫"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 4,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.33
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 2,
+              "usable": 5,
+              "faults": [
+                "Adds many unrequested constraints such as robots.txt/terms compliance, rate limiting, retries/timeouts, CSV/JSON output, and run/dependency instructions.",
+                "Turns the vague request into a multi-item clarification questionnaire instead of a direct crawler-writing prompt."
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds anti-scraping handling and runnable-code/dependency requirements not stated in the original.",
+                "Still asks for several missing specifications, though more concisely than A."
+              ]
+            },
+            "winner": "B",
+            "why": "B is concise and actionable while adding fewer unrequested requirements than A."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "“先说明……再给出” could be read as requesting clarification before producing code, slightly delaying the deliverable"
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "invents a robots.txt/ToS compliance requirement the user never implied",
+                "adds padding like “用于从指定网站抓取所需数据”"
+              ]
+            },
+            "winner": "A",
+            "why": "A adds concrete, implied specifics (fields, pagination, rate, output format, runnable code) without inventing requirements, while B imposes an unrequested robots.txt/ToS constraint."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "在原始需求之外新增了 robots.txt 合规、重试/超时、CSV/JSON 输出等约束",
+                "部分把任务转成向用户追问目标网站与字段的澄清请求"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "新增了反爬处理和“可直接运行完整代码”等未明示的要求",
+                "要求用户先说明网站、字段等，带有一定回问倾向"
+              ]
+            },
+            "winner": "A",
+            "why": "A 在不偏离意图的前提下给出了更具体的交付与验收要点（输出格式、频率控制、重试超时），更具可操作性。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-detail",
+      "note": "已经很具体，测是否过度膨胀",
+      "input": "请把 src/utils/date.ts 里的 formatDate 改成支持时区参数，并为它补三个单元测试。",
+      "workbuddy": {
+        "text": "请修改 `src/utils/date.ts` 中的 `formatDate`，为其增加时区参数，并保持现有默认行为兼容。明确时区参数的类型与默认值，处理无效时区输入，必要时同步更新类型声明和受影响的调用处。为该函数补充三个单元测试，分别覆盖默认时区、指定时区以及边界或无效输入场景，并确保测试可运行、命名清晰。",
+        "ms": 5051,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.84,
+          "kept": [
+            "src/utils/date.ts",
+            "formatDate",
+            "三个单元测试"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.67,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 3,
+          "usable": 4.67,
+          "n": 3
+        },
+        "total": 21.67
+      },
+      "enhanced": {
+        "text": "请把 src/utils/date.ts 里的 formatDate 改成支持时区参数，并为它补三个单元测试，分别覆盖不传时区、传入有效时区与传入非法时区三种情况。",
+        "ms": 2250,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 1.49,
+          "kept": [
+            "src/utils/date.ts",
+            "formatDate",
+            "三个单元测试"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 4.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24.34
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "adds invented requirements: 保持现有默认行为兼容、同步更新类型声明和受影响的调用处",
+                "padding: 确保测试可运行、命名清晰",
+                "明确时区参数的类型与默认值 prescribes design not implied by the user"
+              ]
+            },
+            "winner": "A",
+            "why": "A adds just the concrete test-case scope while staying faithful and restrained, whereas B invents backward-compatibility and call-site/type-declaration work."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "增加了原文未明确要求的兼容性、无效时区处理、类型声明和调用处更新等约束",
+                "内容略显扩写和堆叠"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "把三个单元测试具体化为三种时区场景，属于轻微补充"
+              ]
+            },
+            "winner": "B",
+            "why": "B 更贴合原意，只补充测试场景，没有像 A 那样加入额外工程要求。"
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 4,
+              "faults": [
+                "添加了原请求未明确要求的兼容性、类型声明更新、调用处同步、测试命名等额外约束",
+                "比原文明显扩写，部分要求属于通用最佳实践而非用户指定范围"
+              ]
+            },
+            "winner": "A",
+            "why": "A 在完整保留原意的基础上只补充了三个测试场景，更聚焦且没有引入额外要求。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-list",
+      "note": "列表结构，测结构保持",
+      "input": "帮我整理一下这个需求：\n1. 登录页支持手机号\n2. 验证码 60 秒重发\n3. 记住登录状态 7 天",
+      "workbuddy": {
+        "text": "请将以下登录相关需求整理为清晰、可执行的需求说明，按功能点分别描述并补充必要的约束条件与验收要点：1. 登录页支持手机号登录，明确手机号格式校验与输入提示；2. 验证码发送后 60 秒内不可重复发送，并说明倒计时展示与按钮状态；3. 支持记住登录状态 7 天，说明生效范围、过期后的处理及退出登录时的清除逻辑。",
+        "ms": 2253,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 3.04,
+          "kept": [
+            "手机号",
+            "60",
+            "7 天"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.67,
+          "gain": 5,
+          "language": 5,
+          "restraint": 3.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.34
+      },
+      "enhanced": {
+        "text": "帮我整理一下这个需求，输出一份结构化的需求说明：下面三条每条写清楚具体规则、边界情况和可验证的验收标准，并指出条目之间需要确认的地方。\n1. 登录页支持手机号\n2. 验证码 60 秒重发\n3. 记住登录状态 7 天",
+        "ms": 4374,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.1,
+          "kept": [
+            "手机号",
+            "60",
+            "7 天"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 5,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24.33
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "补充了手机号校验、倒计时展示、过期处理、退出清除等原需求未明说的细节，属于合理细化但略有扩展。"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": [
+                "更偏通用结构化要求，具体可执行细节少于 A。"
+              ]
+            },
+            "winner": "A",
+            "why": "A 在保留原三条需求的同时给出了更具体、可直接执行的约束与验收要点，且未偏离整理需求的目标。"
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "新增了原需求未提及的手机号格式校验、输入提示、倒计时展示、按钮状态、生效范围、过期处理及退出登录清除逻辑",
+                "将“支持手机号”表述为“手机号登录”，略有收窄"
+              ]
+            },
+            "winner": "A",
+            "why": "A 完整保留原始三条需求并只补充整理结构，B 虽更具体但加入了较多未提出的约束。"
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "额外加入手机号格式校验、倒计时按钮状态、过期/退出清除等原文未明说的约束"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B 保留原始三条需求并给出同等可执行的结构化要求，且没有像 A 那样额外引入未明说的约束。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-code",
+      "note": "带代码块，测代码原样保留",
+      "input": "这段代码为什么会内存泄漏？\n```js\nconst cache = new Map()\nsetInterval(() => cache.set(Date.now(), {}), 1000)\n```",
+      "workbuddy": {
+        "text": "请分析以下 JavaScript 代码是否存在内存泄漏，并解释具体原因：`const cache = new Map(); setInterval(() => cache.set(Date.now(), {}), 1000)`。请说明 Map 与 setInterval 如何导致键值对和对象持续累积、哪些引用无法被垃圾回收，以及在长期运行场景下的影响；同时指出该代码在什么条件下不一定构成泄漏，并给出可验证的判断依据。",
+        "ms": 4010,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.14,
+          "kept": [
+            "cache",
+            "Map",
+            "setInterval"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 3.67,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 3.33,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 21.67
+      },
+      "enhanced": {
+        "text": "这段代码为什么会内存泄漏？\n```js\nconst cache = new Map()\nsetInterval(() => cache.set(Date.now(), {}), 1000)\n```\n请说明具体的泄漏机制：`setInterval` 的回调、`cache` 这个 `Map` 以及每次写入的对象之间是如何相互引用、导致这些对象无法被回收的；泄漏量随时间如何增长；以及可以用什么方式（例如堆快照对比）验证这一判断。",
+        "ms": 3783,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": true,
+          "wrapped": false,
+          "lenRatio": 2.17,
+          "kept": [
+            "cache",
+            "Map",
+            "setInterval"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 5,
+          "language": 5,
+          "restraint": 4.33,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24.33
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "把原来的代码块压成一行内联字符串，丢失了原始格式",
+                "把问题从“为什么会泄漏”改成“是否存在泄漏”，并新增“什么条件下不一定构成泄漏”这一原问题未要求的维度，属于扩大范围"
+              ]
+            },
+            "winner": "A",
+            "why": "A 完整保留原问题和代码块，并补充了具体的泄漏机制、增长规律与堆快照验证方式，而 B 改动问题前提并压缩了代码格式。"
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "把“为什么会泄漏”改成“是否存在泄漏”，并追加“不一定构成泄漏”的条件，轻微扩展了原问题；代码块改为单行内联。"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "“相互引用”表述不够准确：回调与每次写入的对象之间主要是经 Map 的引用链，而非彼此互引；堆快照是新增但相关的验证示例。"
+              ]
+            },
+            "winner": "B",
+            "why": "B 完整保留原代码与问法，扩写更聚焦且可执行；A 有轻微改问和范围扩展。"
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Minor: adds a heap-snapshot verification suggestion beyond the original 'why' question, though still closely related."
+              ]
+            },
+            "B": {
+              "fidelity": 3,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "Changes the premise from 'why does this leak' to 'analyze whether it leaks.'",
+                "Collapses the original code block into inline code and adds a semicolon.",
+                "Adds a 'when it may not be a leak' scope not requested in the original."
+              ]
+            },
+            "winner": "A",
+            "why": "A preserves the original code and question exactly while making the requested leak mechanism more specific; B alters the premise and code presentation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-question",
+      "note": "纯提问，测是否被改成需求/被回答",
+      "input": "React 的 useEffect 和 useLayoutEffect 有什么区别？",
+      "workbuddy": {
+        "text": "请说明 React 中 useEffect 和 useLayoutEffect 的区别：分别解释它们的执行时机、是否阻塞浏览器绘制、适用的典型场景，以及在服务端渲染中的表现差异，并给出在什么情况下应优先选择哪一个。",
+        "ms": 1756,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.55,
+          "kept": [
+            "useEffect",
+            "useLayoutEffect"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 5,
+          "language": 5,
+          "restraint": 4,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24
+      },
+      "enhanced": {
+        "text": "React 的 useEffect 和 useLayoutEffect 有什么区别？请从执行时机、是否阻塞浏览器绘制、典型适用场景和常见误用几个方面对比说明。",
+        "ms": 1474,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 1.88,
+          "kept": [
+            "useEffect",
+            "useLayoutEffect"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 4.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds a server-side rendering comparison not explicitly requested"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds common-misuse scope not explicitly requested"
+              ]
+            },
+            "winner": "A",
+            "why": "A is more specific and actionable, covering execution timing, blocking behavior, use cases, SSR, and when to prefer each."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds server-side rendering comparison and selection-priority guidance beyond the original question."
+              ]
+            },
+            "winner": "A",
+            "why": "A stays closer to the original scope while making the comparison more actionable; B adds an unrequested SSR dimension."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds server-side rendering behavior and a preference decision beyond the original ask."
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B stays closer to the original question while adding focused comparison dimensions, whereas A broadens scope with SSR and preference guidance."
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-ops",
+      "note": "运维含糊需求",
+      "input": "服务器老是被打，帮我加固",
+      "workbuddy": {
+        "text": "我的服务器持续遭受攻击，可能包括流量攻击、暴力破解、恶意扫描或入侵尝试。请帮我制定一份服务器安全加固方案：先列出需要我补充的信息（如服务器用途、操作系统、开放端口、现有防护措施和业务访问特征），再给出覆盖网络层、系统层、应用层和账号权限管理的加固要点，并标注优先级；最后附上日常监控、日志审计和应急响应建议。方案需兼顾安全性与业务可用性，避免误封正常访问或影响线上服务。",
+        "ms": 5014,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 15.42,
+          "kept": [
+            "服务器"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.33,
+          "gain": 5,
+          "language": 4.67,
+          "restraint": 3,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 22
+      },
+      "enhanced": {
+        "text": "我的服务器老是被攻击，请帮我加固：请先补充操作系统、对外暴露的服务与端口、被攻击时的具体表现和现有的防护措施，再给出按优先级排序、可直接执行的加固步骤以及每步的验证方法。",
+        "ms": 2147,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 7.08,
+          "kept": [
+            "服务器"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 4,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.33
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "Asks the user to supply a batch of information before delivering anything, edging toward a questionnaire back to the user"
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 4,
+              "restraint": 2,
+              "usable": 5,
+              "faults": [
+                "Invents scope the user never implied (attack-type speculation, network/system/application/account layers, monitoring, log audit, incident response)",
+                "Register shifts noticeably more formal than the original's casual tone",
+                "Pads with generic requirements like business-availability trade-offs"
+              ]
+            },
+            "winner": "A",
+            "why": "A stays close to the original ask, adds priority ordering and verification without inflating scope, while B piles on invented layers and deliverables."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "加入了原消息未提及的攻击类型猜测，并扩展到监控、日志审计和应急响应等额外范围",
+                "先要求补充信息再给方案，直接执行性略弱于B"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B在保留原意和中文口语风格的同时更聚焦，扩展范围更克制且可直接执行。"
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Slightly questionnaire-like by asking the user to supply details first."
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "Introduces possible attack types not stated in the original.",
+                "Expands scope beyond hardening into monitoring, log audit, and emergency response.",
+                "Adds business-availability requirements the original did not imply."
+              ]
+            },
+            "winner": "A",
+            "why": "A preserves the simple request and adds focused hardening detail, while B is more actionable but over-expands scope."
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-vague",
+      "note": "英文极短",
+      "input": "make my site faster",
+      "workbuddy": {
+        "text": "Analyze my website's current performance and identify the main causes of slow load times, such as large assets, unoptimized images, render-blocking resources, excessive scripts, or inefficient caching. Then apply targeted optimizations to improve page load speed and responsiveness, and summarize what was changed along with any measurable improvements in load time or performance metrics.",
+        "ms": 1606,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 20.47,
+          "kept": [
+            "site"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 5,
+          "language": 4.67,
+          "restraint": 4,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.67
+      },
+      "enhanced": {
+        "text": "Make my site faster: first identify what is currently slowing it down, then implement the highest-impact changes and show before-and-after measurements so the improvement can be verified.",
+        "ms": 3025,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 9.84,
+          "kept": [
+            "site"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.33,
+          "language": 5,
+          "restraint": 5,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24.33
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds a summary and measurable-improvements deliverable beyond the terse original; the long cause list is somewhat prescriptive."
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": [
+                "Adds before-and-after measurement as an acceptance criterion, but it is reasonable and closely tied to the request."
+              ]
+            },
+            "winner": "B",
+            "why": "B is equally actionable, more concise, and adds less prescriptive scope than A."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds an enumerated optimization checklist and summary requirement beyond the original scope."
+              ]
+            },
+            "winner": "A",
+            "why": "A stays more restrained while still adding a clear process and verification, whereas B expands scope with extra optimization categories."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 4,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Slightly more formal register than the original",
+                "Adds a reporting/measurement summary beyond the bare request"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B stays closer to the original's concise, casual tone while still making the task actionable and verifiable."
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-tech",
+      "note": "英文技术短句",
+      "input": "add caching to the api",
+      "workbuddy": {
+        "text": "Add caching to the API. Specify which endpoints should be cached, the caching strategy and expiration policy, what should never be cached (such as user-specific or sensitive responses), and how cache invalidation should work when underlying data changes. Include any relevant configuration or environment considerations, and describe how the change can be verified.",
+        "ms": 1509,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 16.59,
+          "kept": [
+            "caching"
+          ],
+          "missing": [
+            "api"
+          ],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 3.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.34
+      },
+      "enhanced": {
+        "text": "Add caching to the api: state which endpoints you're caching and for how long, implement it, and show how cached responses get invalidated when the underlying data changes. Include the working code and any config changes, plus how to verify that a cache hit actually happens.",
+        "ms": 3163,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 12.5,
+          "kept": [
+            "caching",
+            "api"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 5,
+          "language": 5,
+          "restraint": 4.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 24.67
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds extra scope around sensitive/user-specific responses and environment considerations not implied by the original"
+              ]
+            },
+            "winner": "A",
+            "why": "A is equally actionable but tighter and more concrete, especially about verifying an actual cache hit, without adding unrequested scope."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds extra exclusions and environment considerations beyond the terse original.",
+                "Does not explicitly ask for implementation or working code as clearly as B."
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B is equally faithful but more implementation-ready and less sprawling than A."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds extra acceptance details such as working code, config changes, and cache-hit verification, though they are closely tied to the request."
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "Introduces a specific security requirement about never caching user-specific or sensitive responses, which the original did not imply.",
+                "Adds environment considerations as an extra requirement beyond the terse original."
+              ]
+            },
+            "winner": "A",
+            "why": "Both are usable and specific, but A stays closer to the original scope without inventing security/environment constraints."
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-detail",
+      "note": "英文已很具体",
+      "input": "Rewrite the retry logic in src/queue.ts so that it uses exponential backoff with jitter, max 5 attempts, and logs each failure.",
+      "workbuddy": {
+        "text": "Rewrite the retry logic in `src/queue.ts` to use exponential backoff with jitter, capped at a maximum of 5 attempts, and log every failed attempt. Preserve the existing public function signatures, exported types, and surrounding behavior so the change stays scoped to the retry mechanism. Make the backoff base delay, multiplier, and jitter range explicit and configurable rather than hard-coded, and ensure the final attempt's failure is surfaced to the caller as before. Update or add tests covering successful retries, exhaustion of all 5 attempts, and log output per failure, then summarize the changes made.",
+        "ms": 2598,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 4.82,
+          "kept": [
+            "src/queue.ts",
+            "exponential backoff",
+            "5 attempts"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 2.33,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 22
+      },
+      "enhanced": {
+        "text": "Rewrite the retry logic in src/queue.ts so that it uses exponential backoff with jitter, caps at max 5 attempts, and logs each failure. Give the full updated code for the retry logic and describe how to verify the backoff intervals and the failure log output.",
+        "ms": 2824,
+        "metrics": {
+          "langOk": true,
+          "inLang": "en",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.04,
+          "kept": [
+            "src/queue.ts",
+            "exponential backoff",
+            "5 attempts"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 3.67,
+          "language": 5,
+          "restraint": 4.33,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 2,
+              "usable": 5,
+              "faults": [
+                "adds unrequested configurability for backoff base delay, multiplier, and jitter range",
+                "adds tests and a change summary as extra deliverables",
+                "adds preservation and final-failure behavior requirements not present in the original"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "adds a request for full updated code and verification guidance beyond the original scope"
+              ]
+            },
+            "winner": "B",
+            "why": "B keeps the original request tight while adding only modestly useful deliverables, whereas A invents configurable parameters, tests, and summary work."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 2,
+              "usable": 5,
+              "faults": [
+                "Adds unrequested configurability for backoff parameters",
+                "Adds unrequested test updates and a change summary",
+                "Adds preservation constraints not stated in the original"
+              ]
+            },
+            "winner": "A",
+            "why": "A keeps the original scope and adds only a verification ask, while B invents configuration and testing requirements."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "Adds invented requirements: making backoff base delay/multiplier/jitter range configurable, adding tests, and summarizing changes were not requested",
+                "Scope creep beyond the retry mechanism rewrite"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 3,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds a mild extra deliverable (describing how to verify intervals and log output) not stated in the original"
+              ]
+            },
+            "winner": "B",
+            "why": "B preserves the original scope with only a light deliverable clarification, while A invents configurability and test requirements the user never asked for."
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed",
+      "note": "中英混排，测语言跟随",
+      "input": "这段代码有 bug，can you help me fix it?",
+      "workbuddy": {
+        "text": "请帮我分析这段代码中的 bug，can you identify the root cause and point out which part of the code triggers it? Then provide a minimal fix with a brief explanation of why it works and how to verify the fix.",
+        "ms": 1540,
+        "metrics": {
+          "langOk": false,
+          "inLang": "mixed",
+          "outLang": "en",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 5.82,
+          "kept": [],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.33,
+          "gain": 4.67,
+          "language": 4.33,
+          "restraint": 4,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 22.33
+      },
+      "enhanced": {
+        "text": "这段代码有 bug，can you help me fix it? 请先指出 bug 的根本原因，再给出最小改动的修复方案，并说明如何验证修复确实生效。",
+        "ms": 2707,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.3,
+          "kept": [],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4,
+          "language": 5,
+          "restraint": 4.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.67
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 4,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "shifts the mixed-language balance more toward English than the original",
+                "adds extra requirements such as identifying the triggering code part and explaining why the fix works"
+              ]
+            },
+            "winner": "A",
+            "why": "A preserves the original wording and language mix while adding focused, actionable repair requirements with slightly more restraint."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 4,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "rephrases the original instead of preserving its wording",
+                "adds extra demands such as explaining why the fix works and which part triggers the bug"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 5,
+              "usable": 5,
+              "faults": []
+            },
+            "winner": "B",
+            "why": "B preserves the original mixed-language wording while adding concise, directly relevant fix requirements."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "adds root-cause, minimal-change, and verification requirements beyond the original ask"
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "rewrites the original phrasing and adds trigger-point and why-it-works requirements"
+              ]
+            },
+            "winner": "A",
+            "why": "A preserves the original wording exactly while adding only closely related fix guidance."
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-tech",
+      "note": "混排 + 明确技术约束",
+      "input": "用 rust 重写这个 CLI，but keep the flags the same",
+      "workbuddy": {
+        "text": "用 Rust 重写这个 CLI，保持现有所有命令行 flag 的名称、缩写、参数形式、默认值和行为完全一致，确保现有调用方式无需修改即可继续使用；同时保持输出格式和退出码不变，并在完成后说明重写涉及的主要文件与改动范围。",
+        "ms": 2507,
+        "metrics": {
+          "langOk": false,
+          "inLang": "mixed",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 2.56,
+          "kept": [
+            "CLI"
+          ],
+          "missing": [
+            "rust",
+            "flags"
+          ],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.67,
+          "gain": 4.33,
+          "language": 3,
+          "restraint": 2.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 19.67
+      },
+      "enhanced": {
+        "text": "用 rust 重写这个 CLI，but keep the flags the same。请给出可直接编译运行的 Rust 工程（Cargo.toml 和完整源码），保证所有 flag 的名称、默认值和行为都与原 CLI 一致，并附一份逐个 flag 的对照说明或测试，用来验证重写后与原版行为相同。",
+        "ms": 4054,
+        "metrics": {
+          "langOk": true,
+          "inLang": "mixed",
+          "outLang": "mixed",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 3.47,
+          "kept": [
+            "rust",
+            "CLI",
+            "flags"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 5,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 3.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 23.34
+      },
+      "passes": [
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 3,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "将原文混合语言中的英文从句完全译成中文，未保持原有混合语言风格",
+                "额外加入“输出格式和退出码不变”等原请求未明确要求的约束",
+                "额外要求完成后说明主要文件与改动范围，增加交付负担"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "额外要求提供完整 Cargo.toml、完整源码以及逐个 flag 的对照说明或测试，超出“重写并保持 flags 一致”的原始范围"
+              ]
+            },
+            "winner": "B",
+            "why": "B 保留了原混合语言风格，并给出更可执行的 Rust 工程与 flag 一致性验证要求，整体更贴合原意。"
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "adds a per-flag comparison doc/test deliverable the user did not ask for",
+                "adds Cargo.toml/工程结构 requirement beyond the original ask"
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 3,
+              "restraint": 2,
+              "usable": 5,
+              "faults": [
+                "drops the mixed Chinese/English register and rewrites entirely in Chinese",
+                "invents requirements: 缩写、参数形式、输出格式、退出码不变",
+                "invents an extra deliverable (说明改动涉及的文件与范围)"
+              ]
+            },
+            "winner": "A",
+            "why": "A preserves the original wording and mixed language while adding only closely implied deliverable detail, whereas B changes register and piles on invented constraints like exit codes and output format."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 3,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "将原文英文部分完全译成中文，未保留中英混合语码",
+                "新增输出格式/退出码不变及说明改动范围，超出原始要求"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "新增逐个 flag 对照说明或测试的交付物，略有额外范围"
+              ]
+            },
+            "winner": "B",
+            "why": "B 保留了原始中英混合表达，且新增要求更贴近验证 flag 一致性，整体更克制。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-writing",
+      "note": "写作类，非技术",
+      "input": "帮我写个周报",
+      "workbuddy": {
+        "text": "请帮我撰写一份本周工作周报，内容包含本周完成的主要工作事项及进展、遇到的问题与解决方案、下周工作计划，以及需要协调或支持的事项。请按条目清晰组织，语言简洁专业，适合直接提交给上级。",
+        "ms": 2153,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 15,
+          "kept": [
+            "周报"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 4.33,
+          "gain": 4.67,
+          "language": 5,
+          "restraint": 3.67,
+          "usable": 5,
+          "n": 3
+        },
+        "total": 22.67
+      },
+      "enhanced": {
+        "text": "请帮我写一份周报，内容基于我本周的实际工作。请先补充：本周完成的工作项与进展、遇到的问题和风险、下周计划，以及周报的提交对象与期望格式（分点条目或表格、大致篇幅）。产出一份可直接提交的完整周报文本，按条目组织，突出结果与待办。",
+        "ms": 3204,
+        "metrics": {
+          "langOk": true,
+          "inLang": "zh",
+          "outLang": "zh",
+          "metaLeak": false,
+          "fence": false,
+          "wrapped": false,
+          "lenRatio": 18.83,
+          "kept": [
+            "周报"
+          ],
+          "missing": [],
+          "empty": false
+        },
+        "score": {
+          "fidelity": 3.67,
+          "gain": 4,
+          "language": 5,
+          "restraint": 2,
+          "usable": 3.67,
+          "n": 3
+        },
+        "total": 18.34
+      },
+      "passes": [
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 5,
+              "restraint": 2,
+              "usable": 4,
+              "faults": [
+                "asks the user to supply several details before writing, turning the task into a questionnaire",
+                "invents submission object, format, and length requirements not implied by the original"
+              ]
+            },
+            "B": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 5,
+              "restraint": 3,
+              "usable": 5,
+              "faults": [
+                "invents specific sections such as solutions and coordination/support items",
+                "adds a submission-to-superior and concise-professional style not implied by the original"
+              ]
+            },
+            "winner": "B",
+            "why": "B is directly usable and avoids turning a simple request into a questionnaire, though it adds some standard report sections."
+          }
+        },
+        {
+          "flip": false,
+          "verdict": {
+            "A": {
+              "fidelity": 4,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "Adds standard report sections and a submission audience not explicitly requested in the original."
+              ]
+            },
+            "B": {
+              "fidelity": 3,
+              "gain": 4,
+              "language": 5,
+              "restraint": 2,
+              "usable": 3,
+              "faults": [
+                "Turns the task into a questionnaire back to the user instead of rewriting it into a directly executable prompt.",
+                "Adds format, length, and submission-target requirements not present in the original.",
+                "Defers report generation by asking the user to supply content first."
+              ]
+            },
+            "winner": "A",
+            "why": "A stays directly usable and specifies report structure without turning the task into questions back to the user."
+          }
+        },
+        {
+          "flip": true,
+          "verdict": {
+            "A": {
+              "fidelity": 4,
+              "gain": 4,
+              "language": 5,
+              "restraint": 2,
+              "usable": 4,
+              "faults": [
+                "把写周报变成先向用户收集信息的问卷，未直接产出",
+                "增加了提交对象、格式、篇幅等原未明确的要求"
+              ]
+            },
+            "B": {
+              "fidelity": 5,
+              "gain": 5,
+              "language": 5,
+              "restraint": 4,
+              "usable": 5,
+              "faults": [
+                "默认加入“提交给上级”和“协调支持事项”等未明说的设定"
+              ]
+            },
+            "winner": "B",
+            "why": "B 直接给出可执行的周报写作指令，结构清晰且没有把任务变成反问清单。"
+          }
+        }
+      ]
+    }
+  ]
+}
